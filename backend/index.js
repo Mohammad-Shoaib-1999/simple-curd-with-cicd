@@ -7,18 +7,19 @@ const app = express();
 // Serve the static files from the React app
 app.use(express.static(path.join(__dirname, '../frontend/dist')));
 
+// API endpoint
+app.get('/api/products', async (req, res) => {
+    try {
+        const response = await axios.get('https://fakestoreapi.com/products');
+        res.send(response.data);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch products' });
+    }
+});
+
 // Handle requests by serving index.html for all routes
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend/dist', 'index.html'));
 });
 
-// API endpoint
-app.use('/api/products', async (req, res) => {
-    const response = await axios.get('https://fakestoreapi.com/products');
-    res.send(response.data);
-});
-
-// Start the server
-app.listen(4000, () => {
-    console.log('Server is running on port 4000');
-});
+module.exports = app;
